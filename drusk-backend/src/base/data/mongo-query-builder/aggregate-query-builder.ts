@@ -49,4 +49,55 @@ export class AggregateQueryBuilder {
      }
      return this;
  }
+/**
+  * Outputs the document with a child matching the presented ID
+  *
+  * @param childPath - Field Path. @see https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/
+  * @param childId - Object ID of child
+  */
+ public findSingleChild(childPath: string | object, childId: ObjectID) {
+    this.unwindChildren(childPath);
+
+    const predPart = {};
+    predPart[childPath + "_id"] = childId;
+    this._predicate.push({ $match: predPart });
+    // example output { $unwind: "$streams" }, {  $match: { "streams._id": streamObjectId } },
+
+    return this;
+  }
+
+  /**
+  * Performs a left outer join to a collection in the same database.
+  *
+  * Adds a new array field whose elements are the matching documents from the “joined” collection
+  *
+  * @param from -	Root collection name from where the join is being done.
+  * @param localField - Foreign Key (FK).
+  * @param to - Collection to which the join is being done.
+  * @param toField - Field on the foreign collection with which the FK binds.
+  * @param as - Specifies the name of the new array field to add to the input documents. The new array field contains the matching documents from the from collection.
+  */
+ public join(from: string, fromField: string, to: string, toField: string, as: string) {
+     this._predicate.push({
+         $lookup: {
+             from: to, // MongoDB does it opposite to SQL
+             localField: fromField,
+             foreignField: toField,
+             as
+         }
+     });
+     
+     return this;
+ }
+ // Uses https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/ - But be aware
+
+  /**
+  *
+  * @param childName -	Child in collection from where the join is being done.
+  * @param localField - Foreign Key on child (FK).
+  * @param to - Collection to which the join is being done.
+  * @param toField - Field on the foreign collection with which the FK binds.
+  * @param as - Specifies the name of the new array field to add to the input documents. The new array field contains the matching documents from the from collection.
+  */
+
 }
