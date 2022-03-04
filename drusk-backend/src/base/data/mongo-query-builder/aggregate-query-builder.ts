@@ -89,9 +89,8 @@ export class AggregateQueryBuilder {
      
      return this;
  }
- // Uses https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/ - But be aware
-
-  /**
+/**
+  * Performs a left outer join from a collection with children.
   *
   * @param childName -	Child in collection from where the join is being done.
   * @param localField - Foreign Key on child (FK).
@@ -99,5 +98,27 @@ export class AggregateQueryBuilder {
   * @param toField - Field on the foreign collection with which the FK binds.
   * @param as - Specifies the name of the new array field to add to the input documents. The new array field contains the matching documents from the from collection.
   */
+ public joinNextFromChild(childName: string, fromField: string, to: string, toField: string, as: string) {
+    this.join(childName, childName + "." + fromField, to, toField, as);
 
+    return this;
+  }
+
+   /**
+  * Adds a filter or Mongo-$match to the predicate.
+  *
+  * @param fields - Collection of filter fields @see ./filter-field.interface
+  */
+    public filter(... fields: FilterField[]) {
+        const filter = { $match: {} };
+    
+    for (let field of fields){
+        const fieldName = AggregateQueryBuilder._getFilterFieldName(field.field, field.orgin);
+
+        filter.$match[fieldName] = field.value;
+    }
+
+    this._predicate.push(filter);
+
+    return this;
 }
