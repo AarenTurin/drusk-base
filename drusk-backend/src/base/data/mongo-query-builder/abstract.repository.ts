@@ -20,7 +20,21 @@ export abstract class AbstractRepository<T extends Mongobjects> {
     }
 
     async findById(id: ObjectId): Promise<T> {
-        let res = await this.findAll({_id: id });
-        return res,shift();
+        let res = await this.findAll({ _id: id });
+        return res.shift();
+    }
+
+    async single(query: any): Promise<T> {
+        let res = await this.find(query);
+
+        return res.shift();
+    }
+
+    async find(query: any): Promise<T[]> {
+        return await this._model.find(query).exec();
+    }
+
+    async insert(item: T): Promise<T | false> {
+        
     }
 }
