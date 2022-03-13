@@ -6,7 +6,7 @@ It follows a similar application structure than angular and is therefore a nice 
 
 To run the Drusk Base FrontEnd, we first need to run the backend. Follow the following steps:
 
-#### 1) Configure the database
+### 1) Configure the database
   1. Install MongoDB on your local machine or create a test database on https://www.mongodb.com/cloud/atlas
   
   2. Navigate to `/drusk-backend/src/base/config`
@@ -18,5 +18,5 @@ To run the Drusk Base FrontEnd, we first need to run the backend. Follow the fol
 
   5. Don't worry about seeding the database. Our fixtures will do that automatically for you on server load :)
 
-#### 2) Run the backend server
+### 2) Run the backend server 
 Navigate with shell/cmd to `/drusk-backend` and execute `yarn run start`. The backend will now be running at `http://localhost:3000/`. #
