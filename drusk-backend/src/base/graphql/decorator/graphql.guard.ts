@@ -41,12 +41,34 @@ export function createGraphqlGuard(name: string) {
     };
   }
 
-  /** protects endpoint from unauthored requests */
-  fucntion _claimsGaurd(bearer: BearerToken, classTarget, methodTarget) {
-      const neededClaims = _getNeededClaims(classTarget, methodTarget);
-
-      if (_tokenHasClaims(bearer, <string[]>neededClaims)) return true;
-      else throw new Error("Forbudden resource");
+ /** Protects endpoint from unauthored requests. */
+function _claimsGaurd(bearer: BearerToken, classTarget, methodTarget) {
+    const neededClaims = _getNeededClaims(classTarget, methodTarget);
+  
+    if (_tokenHasClaims(bearer, <string[]>neededClaims)) return true;
+    else throw new Error("Forbidden resource");
   }
 
-  
+  /** Aggregates the claims needed to run the targeted method.
+   * Combines te claims requirements of class and method
+   */
+  function _getNeededClaims(classTarget, methodTarget) {
+      // Get claims on controller / graphql resolver level
+      const classClaims = Reflect.getMetadata("claims", classTarget) || [];
+      // Get claims on method / property level
+      const methodClaims = Reflect.getMetadata("claims", methodTarget) || [];
+
+      return _.union(classClaims, methodClaims);
+  }
+
+  /**
+   * Logic that determines how claims are going to be used
+   * 
+   * Do we require a uset to have all claims for that class and method? - Most restrictive 'AND' -like approach
+   * Do we requre a user to have only one of the claims on either class or method level - 'OR' -likee approach
+   * 
+   * We opt for the most restrictive one on our server
+   */
+  function _tokenHasClaims(token: BearerToken, claims: String[]) {
+      //AND -approach - needs all claims
+  } 
