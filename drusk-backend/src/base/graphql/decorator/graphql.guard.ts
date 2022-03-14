@@ -71,4 +71,18 @@ function _claimsGaurd(bearer: BearerToken, classTarget, methodTarget) {
    */
   function _tokenHasClaims(token: BearerToken, claims: String[]) {
       //AND -approach - needs all claims
+      return claims.length === _.intersection(token.claims, claims).length
+      ? _success()
+      : _failure();
+
+      // OR-approach-Needs only one claim
+      //return _.intersection(token.claims, claims)
+    //  .length > 0;
   } 
+  function _success() {
+      console.log(
+          "Graphql Guard Conditions Failed or Token expired. Denying Access.",
+          "Query Decorator"
+      );
+      return false;
+  }
