@@ -23,6 +23,20 @@ export function createGraphGuard(name: string) {
                 key,
                 descriptor
             );
+            ReflectMetadata("graphql:resolver_type", resolver || name)(
+                target,
+                key,
+                descriptor
+            );
+            ReflectMetadata("graphql:esolver_name", name)(target, key, descriptor);
+
+            const toExecute = descriptor.value;
+            // Change the descriptor value to reflect the changes
+            descriptor.value = async function (...args: any[]) {
+                console.log("Graphql ClaimsGaurd: Checking if User is Authorised.");
+
+            //Get the ontext from the parameters
+            }
         }
     }
 }
